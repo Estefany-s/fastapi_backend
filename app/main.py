@@ -7,9 +7,11 @@ from app.database import Base, engine
 
 # IMPORTAR MODELOS
 from app.models.marca import Marca
+from app.models.vehiculo import Vehiculo
 
 # IMPORTAR ROUTERS
 from app.routers import marca
+from app.routers import vehiculo
 
 # CREAR TABLAS
 Base.metadata.create_all(bind=engine)
@@ -43,3 +45,4 @@ def inicio():
 
 # ROUTERS
 app.include_router(marca.router)
+app.include_router(vehiculo.router)
