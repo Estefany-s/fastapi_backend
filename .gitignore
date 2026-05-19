@@ -1,0 +1,30 @@
+# --- Entornos Virtuales ---
+# Ignora la carpeta venv que creamos y cualquier otra variante común
+venv/
+.venv/
+env/
+ENV/
+
+# --- Caché de Python ---
+# Archivos compilados que Python genera automáticamente al ejecutar el código
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# --- Variables de Entorno (Datos Sensibles) ---
+# Aquí guardarás contraseñas, llaves de API o credenciales de Base de Datos más adelante
+.env
+.env.local
+.env.*
+
+# --- Configuraciones del Editor de Código ---
+# VS Code
+.vscode/
+# PyCharm / IntelliJ
+.idea/
+
+# --- Sistemas Operativos ---
+.DS_Store
+Thumbs.db
