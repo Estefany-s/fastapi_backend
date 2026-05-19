@@ -1,53 +1,45 @@
 # app/main.py
-from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.middleware.cors import CORSMiddleware  # <-- IMPORTANTE: Añadir esta línea
-from sqlalchemy.orm import Session
-from typing import List
-from .database import engine, get_db
-from . import models, schemas, crud
 
-models.Base.metadata.create_all(bind=engine)
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="API de Control de Vehículos")
+from app.database import Base, engine
 
-# --- CONFIGURACIÓN DE CORS ---
-# Definimos qué orígenes (direcciones) tienen permiso de hablar con nuestra API
+# IMPORTAR MODELOS
+from app.models.marca import Marca
+
+# IMPORTAR ROUTERS
+from app.routers import marca
+
+# CREAR TABLAS
+Base.metadata.create_all(bind=engine)
+
+# APP
+app = FastAPI(
+    title="API de Control de Vehículos"
+)
+
+# CORS
 origins = [
-    "http://localhost:3000",  # Puerto clásico de React
-    "http://localhost:5173",  # Puerto estándar para Vite + React 
+    "http://localhost:3000",
+    "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,            # Permite peticiones desde las URLs de la lista
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],              # Permite todos los métodos (GET, POST, PUT, DELETE)
-    allow_headers=["*"],              # Permite todos los encabezados
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
+# RUTA PRINCIPAL
 @app.get("/")
 def inicio():
-    return {"mensaje": "Bienvenida a la API de Carros, el servidor está corriendo perfectamente."}
+    return {
+        "mensaje": "Bienvenida a la API de Carros, el servidor está corriendo perfectamente."
+    }
 
-# --- RUTAS DE MARCAS ---
-@app.post("/marcas/", response_model=schemas.MarcaResponse, status_code=status.HTTP_201_CREATED)
-def crear_marca(marca: schemas.MarcaCreate, db: Session = Depends(get_db)):
-    return crud.create_marca(db=db, marca=marca)
-
-@app.get("/marcas/", response_model=List[schemas.MarcaResponse])
-def listar_marcas(db: Session = Depends(get_db)):
-    return crud.get_marcas(db)
-
-# --- RUTAS DE VEHÍCULOS ---
-@app.post("/vehiculos/", response_model=schemas.VehiculoResponse, status_code=status.HTTP_201_CREATED)
-def guardar_vehiculo(vehiculo: schemas.VehiculoCreate, db: Session = Depends(get_db)):
-    return crud.create_vehiculo(db=db, vehiculo=vehiculo)
-
-@app.get("/vehiculos/", response_model=List[schemas.VehiculoConMarcaResponse])
-def listar_vehiculos(db: Session = Depends(get_db)):
-    return crud.get_todos_los_vehiculos(db=db)
-
-@app.get("/vehiculos/{id_vehiculo}", response_model=schemas.VehiculoConMarcaResponse)
-def obtener_vehiculo(id_vehiculo: int, db: Session = Depends(get_db)):
-    return crud.get_vehiculo_por_id(db=db, id_vehiculo=id_vehiculo)
+# ROUTERS
+app.include_router(marca.router)
