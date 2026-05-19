@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from .marca import MarcaResponse  # Importamos el schema de marca para anidarlo
+from .fotografia import FotografiaResponse
 
 class VehiculoBase(BaseModel):
     Modelo: str = Field(..., max_length=100)
@@ -10,8 +11,8 @@ class VehiculoBase(BaseModel):
     
     Color: Optional[str] = Field(None, max_length=30)
     
-    # Validation: ge=1000.0 fuerza un valor monetario realista y descarta negativos
-    Precio: float = Field(default=1000.00, ge=1000.0, description="El precio mínimo es de $1000.00")
+    # Validation: ge=0.0 fuerza un valor monetario realista y descarta negativos
+    Precio: float = Field(default=1000.00, ge=0.0, description="El precio mínimo es de $0.00")
     
     ID_Marca: int
 
@@ -38,6 +39,7 @@ class VehiculoResponse(VehiculoBase):
 # Esto es vital para cumplir el Ítem 7 y 14 de la rúbrica
 class VehiculoConMarcaResponse(VehiculoResponse):
     marca: Optional[MarcaResponse] = None
+    fotografias: List[FotografiaResponse] = []
 
     class Config:
         from_attributes = True

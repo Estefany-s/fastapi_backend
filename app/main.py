@@ -12,6 +12,7 @@ from app.models.vehiculo import Vehiculo
 # IMPORTAR ROUTERS
 from app.routers import marca
 from app.routers import vehiculo
+from app.routers import fotografia
 
 # CREAR TABLAS
 Base.metadata.create_all(bind=engine)
@@ -26,6 +27,8 @@ origins = [
     "http://localhost:3000",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
 ]
 
 app.add_middleware(
@@ -46,3 +49,4 @@ def inicio():
 # ROUTERS
 app.include_router(marca.router)
 app.include_router(vehiculo.router)
+app.include_router(fotografia.router)
